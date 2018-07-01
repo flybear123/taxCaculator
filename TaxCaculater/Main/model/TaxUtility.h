@@ -9,7 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "InsuranceFundModel.h"
 @interface TaxUtility : NSObject
-- (CGFloat)caculateProfitWithIncome:(CGFloat)income andProfitModel:(InsuranceFundModel *)insuranceModel ;
++ (CGFloat)caculateProfitWithIncome:(CGFloat)income andProfitModel:(InsuranceFundModel *)insuranceModel ;
 
-- (InsuranceFundModel  *)caculateInsuranceWithIncome:(CGFloat)income andCity:(NSString *)city ;
++ (InsuranceFundModel  *)getInsuranceWithIncome:(CGFloat)income andCity:(NSString *)city ;
+
++ (InsuranceFundModel  *)getCompanyInsuranceWithIncome:(CGFloat)income andCity:(NSString *)city ;
 @end

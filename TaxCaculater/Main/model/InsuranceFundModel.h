@@ -21,5 +21,5 @@
 @property(nonatomic,assign)CGFloat shiyeFund;
 @property(nonatomic,assign)CGFloat shengyuFund;
 @property(nonatomic,assign)CGFloat gongshangFund;
-
+@property(nonatomic,assign)CGFloat gongjijinFund;
 @end

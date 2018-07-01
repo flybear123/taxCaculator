@@ -10,6 +10,7 @@
 #import "PdTaxMoneyCell.h"
 #import "PdTaxInsuranceCell.h"
 #import "TaxModel.h"
+#import "TaxUtility.h"
 #import "PersonInsuranceModel.h"
 #import "PdTaxTitleCell.h"
 #import "TaxFormView.h"
@@ -27,8 +28,9 @@ UIScrollViewDelegate
 @property (nonatomic,strong)NSMutableArray *titleArray;
 @property (nonatomic,strong)NSMutableArray *insureArray;
 @property (nonatomic,strong)UIView      *incomeView;
+@property (nonatomic,strong)UITextField *incomeTextField;
 @property (nonatomic,strong)UIView      *cityView;
-
+@property (nonatomic,strong)UIView      *baseInsuranceView;
 
 @property (nonatomic,strong)UIView      *titleHeadView;
 @property (nonatomic,strong)TaxFormView *yanglaoView;
@@ -36,6 +38,10 @@ UIScrollViewDelegate
 @property (nonatomic,strong)TaxFormView *shiyeView;
 @property (nonatomic,strong)TaxFormView *shengyuView;
 @property (nonatomic,strong)TaxFormView *gongshangView;
+@property (nonatomic,strong)TaxFormView *gongjijinView;
+
+@property (nonatomic,strong)UIView      *cutTaxView;
+@property (nonatomic,strong)UILabel     *cutTaxLabel ;
 @property (nonatomic,strong)ProfitView  *profitView;
 @end
 
@@ -58,13 +64,13 @@ UIScrollViewDelegate
         _insureArray = [[NSMutableArray alloc] init];
     }
     NSArray *yanglaoArray = @[@"养老",@"0.08",@"0",@"0.22",@"0"];
-    NSArray *yiliaoArray = @[@"医疗",@"0.02",@"0",@"0.11",@"0"];
-    NSArray *shiyeArray = @[@"失业",@"0.005",@"0",@"0.015",@"0"];
-    NSArray *shengyuArray = @[@"生育",@"0.08",@"0",@"0.22",@"0"];
-    NSArray *gongshangArray = @[@"工伤",@"0.08",@"0",@"0.22",@"0"];
-
+    NSArray *yiliaoArray = @[@"医疗",@"0.02",@"0",@"0.10",@"0"];
+    NSArray *shiyeArray = @[@"失业",@"0.002",@"0",@"0.01",@"0"];
+    NSArray *shengyuArray = @[@"生育",@"0.00",@"0",@"0.008",@"0"];
+    NSArray *gongshangArray = @[@"工伤",@"0.00",@"0",@"0.005",@"0"];
+    NSArray *gongjijinArray = @[@"公积金",@"0.05",@"0",@"0.05",@"0"];
     
-    NSArray *array = @[yanglaoArray,yiliaoArray,shiyeArray,shengyuArray,gongshangArray];
+    NSArray *array = @[yanglaoArray,yiliaoArray,shiyeArray,shengyuArray,gongshangArray,gongjijinArray];
     for (int i=0; i<array.count; i++) {
         PersonInsuranceModel *model =[[PersonInsuranceModel alloc]init];
         NSArray *subArr = [array objectAtIndex:i];
@@ -83,6 +89,7 @@ UIScrollViewDelegate
     [self initTaxCategoryView];
     [self initTaxTitleView];
     [self initTaxView];
+    [self initCutTaxView];
     [self initProfitLabel];
 }
 
@@ -97,7 +104,7 @@ UIScrollViewDelegate
     incomeTextField.placeholder = @"(元)";
     incomeTextField.keyboardType = UIKeyboardTypeNumberPad;
     [incomeView addSubview:incomeTextField];
-    
+    self.incomeTextField = incomeTextField;
     [incomeNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(incomeView.mas_left).offset(15);
         make.height.equalTo(incomeView.mas_height);
@@ -116,17 +123,17 @@ UIScrollViewDelegate
     UIView *cityView = [[UIView alloc] initWithFrame:CGRectMake(0, incomeView.bottom, Pd_Screen_width, 44)];
     [self.view addSubview:cityView];
     self.cityView = cityView;
-    UILabel *cityNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 80, 44)];
-    cityNameLabel.text = @"所在城市";
+    UILabel *cityNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 140, 44)];
+    cityNameLabel.text = @"城市基本工资(元)";
     [cityView addSubview:cityNameLabel];
     UITextField *cityTextField = [[UITextField alloc] init];
-    cityTextField.placeholder = @"深圳(点此更换城市)";
+    cityTextField.placeholder = @"2200";
     [cityView addSubview:cityTextField];
     
     [cityNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(cityView.mas_left).offset(15);
         make.height.equalTo(cityView.mas_height);
-        make.width.equalTo(@80);
+        make.width.equalTo(@140);
         make.top.equalTo(cityView.mas_top);
     }];
     
@@ -136,6 +143,14 @@ UIScrollViewDelegate
         make.height.equalTo(cityView.mas_height);
         make.top.equalTo(cityView.mas_top);
     }];
+    
+    UIView *baseInsuranceView = [[UIView alloc] initWithFrame:CGRectMake(0, self.cityView.bottom, Pd_Screen_width, 44)];
+    [self.view addSubview:baseInsuranceView];
+    self.baseInsuranceView = baseInsuranceView;
+    UILabel *baseLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 160, 44)];
+    baseLabel.text = @"按基本工资缴纳社保";
+    [baseInsuranceView addSubview:baseLabel];
+    
 }
 
 
@@ -145,7 +160,7 @@ UIScrollViewDelegate
     [self.view addSubview:categoryView];
     _categoryView = categoryView;
     [categoryView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.cityView.mas_bottom);
+        make.top.equalTo(self.baseInsuranceView.mas_bottom);
         make.left.equalTo(self.view.mas_left);
         make.right.equalTo(self.view.mas_right);
         make.height.equalTo(@44);
@@ -194,19 +209,19 @@ UIScrollViewDelegate
     _shiyeView = [[[NSBundle mainBundle] loadNibNamed:@"TaxFormView" owner:self options:nil] lastObject];
     _shengyuView = [[[NSBundle mainBundle] loadNibNamed:@"TaxFormView" owner:self options:nil] lastObject];
     _gongshangView = [[[NSBundle mainBundle] loadNibNamed:@"TaxFormView" owner:self options:nil] lastObject];
-    
+    _gongjijinView = [[[NSBundle mainBundle] loadNibNamed:@"TaxFormView" owner:self options:nil] lastObject];
     [self.view addSubview:_yanglaoView];
     [self.view addSubview:_yiliaoView];
     [self.view addSubview:_shiyeView];
     [self.view addSubview:_shengyuView];
     [self.view addSubview:_gongshangView];
-    
+    [self.view addSubview:_gongjijinView];
     [_yanglaoView initWithTaxInfo:[self.insureArray objectAtIndex:0]];
     [_yiliaoView initWithTaxInfo:[self.insureArray objectAtIndex:1]];
     [_shiyeView initWithTaxInfo:[self.insureArray objectAtIndex:2]];
     [_shengyuView initWithTaxInfo:[self.insureArray objectAtIndex:3]];
     [_gongshangView initWithTaxInfo:[self.insureArray objectAtIndex:4]];
-    
+    [_gongjijinView initWithTaxInfo:[self.insureArray objectAtIndex:5]];
     [_yanglaoView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(_titleHeadView.mas_bottom);
         make.left.equalTo(self.view.mas_left);
@@ -237,8 +252,49 @@ UIScrollViewDelegate
         make.right.equalTo(self.view.mas_right);
         make.height.equalTo(@44);
     }];
-    
+    [_gongjijinView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(_gongshangView.mas_bottom);
+        make.left.equalTo(self.view.mas_left);
+        make.right.equalTo(self.view.mas_right);
+        make.height.equalTo(@44);
+    }];
 }
+
+- (void)initCutTaxView {
+    
+    UIView *cutTaxView = [[UIView alloc] initWithFrame:CGRectMake(0, Pd_Top_Bar_Height, Pd_Screen_width, 44)];
+    [self.view addSubview:cutTaxView];
+    self.cutTaxView = cutTaxView;
+    [self.cutTaxView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.view.mas_left);
+        make.right.equalTo(self.view.mas_right);
+        make.top.equalTo(_gongjijinView.mas_bottom);
+        make.height.equalTo(@44);
+    }];
+    UILabel *cutTaxTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 80, 44)];
+    cutTaxTitleLabel.text = @"所得税扣除额(元)";
+    [self.cutTaxView addSubview:cutTaxTitleLabel];
+    UILabel *cutTaxLabel = [[UILabel alloc] init];
+    cutTaxLabel.textAlignment = NSTextAlignmentLeft;
+    [self.cutTaxView addSubview:cutTaxLabel];
+    self.cutTaxLabel = cutTaxLabel;
+    [cutTaxTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(self.cutTaxView.mas_left).offset(15);
+        make.height.equalTo(self.cutTaxView.mas_height);
+        make.width.equalTo(@(135));
+        make.top.equalTo(self.cutTaxView.mas_top);
+    }];
+    
+    [cutTaxLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(cutTaxTitleLabel.mas_right).offset(5);
+        make.height.equalTo(self.cutTaxView.mas_height);
+        make.width.equalTo(@180);
+        make.top.equalTo(self.cutTaxView.mas_top);
+    }];
+    
+    [self.view addSubview:self.cutTaxView];
+}
+
 
 - (void)initProfitLabel {
     _profitView = [[ProfitView alloc] init];
@@ -247,7 +303,7 @@ UIScrollViewDelegate
         make.centerX.equalTo(self.view.mas_centerX);
         make.width.equalTo(@100);
         make.height.equalTo(@50);
-        make.top.equalTo(_gongshangView.mas_bottom).offset(30);
+        make.top.equalTo(_cutTaxView.mas_bottom).offset(30);
     }];
     [_profitView setupWithIncome:0];
 }
@@ -256,12 +312,36 @@ UIScrollViewDelegate
 - (void)taxInputChange :(NSNotification *)noti {
 
     UITextField *textField = noti.object;
+    if (textField != self.incomeTextField) {
+        return;
+    }
     CGFloat income = [textField.text floatValue];
+    InsuranceFundModel *insuranceModel  = [TaxUtility getInsuranceWithIncome:income andCity:@"深圳"];
+    InsuranceFundModel *companyModel = [TaxUtility getCompanyInsuranceWithIncome:income andCity:@"深圳"];
+    CGFloat profit = [TaxUtility caculateProfitWithIncome:income andProfitModel:insuranceModel];
+    [self updateInsuranceWithInsuranceModel:insuranceModel andCompanyModel:companyModel andIncome:income];
     
+    [_profitView setupWithIncome:profit];
     
+}
+
+- (void)updateInsuranceWithInsuranceModel:(InsuranceFundModel *)insuranceModel andCompanyModel:(InsuranceFundModel *)companyModel andIncome:(CGFloat)income {
+    _yanglaoView.personFund = [NSString stringWithFormat:@"%.0f",insuranceModel.yanglaoFund];
+    _yiliaoView.personFund = [NSString stringWithFormat:@"%.0f",insuranceModel.yiliaoFund];
+    _gongshangView.personFund =  [NSString stringWithFormat:@"%.0f",insuranceModel.gongshangFund];
+    _shengyuView.personFund =  [NSString stringWithFormat:@"%.0f",insuranceModel.shengyuFund];
+    _shiyeView.personFund =  [NSString stringWithFormat:@"%.0f",insuranceModel.shiyeFund];
+    _gongjijinView.personFund  = [NSString stringWithFormat:@"%.0f",insuranceModel.gongjijinFund];
     
-    [_profitView setupWithIncome:income];
+    _yanglaoView.companyFund = [NSString stringWithFormat:@"%.0f",companyModel.yanglaoFund];
+    _yiliaoView.companyFund = [NSString stringWithFormat:@"%.0f",companyModel.yiliaoFund];
+    _gongshangView.companyFund =  [NSString stringWithFormat:@"%.0f",companyModel.gongshangFund];
+    _shengyuView.companyFund =  [NSString stringWithFormat:@"%.0f",companyModel.shengyuFund];
+    _shiyeView.companyFund =  [NSString stringWithFormat:@"%.0f",companyModel.shiyeFund];
+    _gongjijinView.companyFund  = [NSString stringWithFormat:@"%.0f",companyModel.gongjijinFund];
     
+    CGFloat cutTax = income - insuranceModel.yanglaoFund -  insuranceModel.yiliaoFund - insuranceModel.gongjijinFund - insuranceModel.gongshangFund - insuranceModel.shengyuFund - insuranceModel.shengyuFund;
+    _cutTaxLabel.text = [NSString stringWithFormat:@"%.0f",cutTax];
 }
 
 
