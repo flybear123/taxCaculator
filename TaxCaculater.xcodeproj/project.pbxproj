@@ -34,6 +34,9 @@
 		84B37B9E207E58D50059B6AA /* PdTaxInsuranceCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84B37B9C207E58D50059B6AA /* PdTaxInsuranceCell.xib */; };
 		84B37BA2207E590A0059B6AA /* PdTaxMoneyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84B37BA0207E590A0059B6AA /* PdTaxMoneyCell.m */; };
 		84B37BA3207E590A0059B6AA /* PdTaxMoneyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84B37BA1207E590A0059B6AA /* PdTaxMoneyCell.xib */; };
+		84D46C1120E9A0F500B271B3 /* ico_Subscribe@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84D46C0E20E9A0F500B271B3 /* ico_Subscribe@3x.png */; };
+		84D46C1220E9A0F500B271B3 /* ico_Subscribe@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84D46C0F20E9A0F500B271B3 /* ico_Subscribe@2x.png */; };
+		84D46C1320E9A0F500B271B3 /* ico_Subscribe.png in Resources */ = {isa = PBXBuildFile; fileRef = 84D46C1020E9A0F500B271B3 /* ico_Subscribe.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +110,9 @@
 		84B37B9F207E590A0059B6AA /* PdTaxMoneyCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PdTaxMoneyCell.h; sourceTree = "<group>"; };
 		84B37BA0207E590A0059B6AA /* PdTaxMoneyCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PdTaxMoneyCell.m; sourceTree = "<group>"; };
 		84B37BA1207E590A0059B6AA /* PdTaxMoneyCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PdTaxMoneyCell.xib; sourceTree = "<group>"; };
+		84D46C0E20E9A0F500B271B3 /* ico_Subscribe@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_Subscribe@3x.png"; sourceTree = "<group>"; };
+		84D46C0F20E9A0F500B271B3 /* ico_Subscribe@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_Subscribe@2x.png"; sourceTree = "<group>"; };
+		84D46C1020E9A0F500B271B3 /* ico_Subscribe.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ico_Subscribe.png; sourceTree = "<group>"; };
 		9E2E7BEEEDA24E4572BC7E67 /* Pods-TaxCaculater.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TaxCaculater.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TaxCaculater/Pods-TaxCaculater.debug.xcconfig"; sourceTree = "<group>"; };
 		AC758CEDC283A4DD0F3DE1F8 /* libPods-TaxCaculaterUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TaxCaculaterUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEEE1EC223D63CC29739B5AF /* Pods-TaxCaculater.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TaxCaculater.release.xcconfig"; path = "Pods/Target Support Files/Pods-TaxCaculater/Pods-TaxCaculater.release.xcconfig"; sourceTree = "<group>"; };
@@ -180,6 +186,7 @@
 		84B37B32207B9B140059B6AA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				84D46C0D20E9A0F500B271B3 /* Images */,
 				84B37B33207B9B140059B6AA /* main.m */,
 				84B37B6C207E41C90059B6AA /* TaxCaculater.pch */,
 			);
@@ -307,6 +314,16 @@
 				8479EC6420E3E68E0080EADE /* InsuranceFundModel.m */,
 			);
 			path = model;
+			sourceTree = "<group>";
+		};
+		84D46C0D20E9A0F500B271B3 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				84D46C0E20E9A0F500B271B3 /* ico_Subscribe@3x.png */,
+				84D46C0F20E9A0F500B271B3 /* ico_Subscribe@2x.png */,
+				84D46C1020E9A0F500B271B3 /* ico_Subscribe.png */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		B10608363FD0006DF016EBD8 /* Pods */ = {
@@ -444,6 +461,9 @@
 				84B37B42207B9B140059B6AA /* LaunchScreen.storyboard in Resources */,
 				84B37B3F207B9B140059B6AA /* Assets.xcassets in Resources */,
 				8471EEA020D41A1200D8B747 /* TaxFormView.xib in Resources */,
+				84D46C1320E9A0F500B271B3 /* ico_Subscribe.png in Resources */,
+				84D46C1220E9A0F500B271B3 /* ico_Subscribe@2x.png in Resources */,
+				84D46C1120E9A0F500B271B3 /* ico_Subscribe@3x.png in Resources */,
 				8471EE9820CD7EE000D8B747 /* TaxTitleHeadView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

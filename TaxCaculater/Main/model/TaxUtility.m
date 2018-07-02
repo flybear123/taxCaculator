@@ -11,12 +11,13 @@
 @implementation TaxUtility
 
 + (CGFloat)caculateProfitWithIncome:(CGFloat)income andProfitModel:(InsuranceFundModel *)insuranceModel {
-    if (income <=3500) {
-        return income;
-    }
+
     CGFloat profit = 0;
     CGFloat profitAfterInsurance = income - insuranceModel.yanglaoFund -insuranceModel.gongshangFund - insuranceModel.shiyeFund - insuranceModel.shengyuFund - insuranceModel.yiliaoFund -insuranceModel.gongjijinFund;
     CGFloat needTaxIncome = profitAfterInsurance - 3500;
+    if (profitAfterInsurance <=3500) {
+        return profitAfterInsurance;
+    }
     if (needTaxIncome  > 0 && needTaxIncome <= 1500)
     {
         profit =profitAfterInsurance - needTaxIncome*0.03;
@@ -45,25 +46,38 @@
 }
 
 + (InsuranceFundModel  *)getInsuranceWithIncome:(CGFloat)income andCity:(NSString *)city {
+    CGFloat averageIncome=10000 ;
+    CGFloat maxInsurance=100000;
     InsuranceFundModel *insuranceModel = [[InsuranceFundModel alloc] init];
-    insuranceModel.yanglaoFund = income * 0.08;
-    insuranceModel.yiliaoFund = income * 0.02;
+    if ([city isEqualToString:@"深圳"]) {
+         averageIncome = 8348;
+         maxInsurance = 8348 * 3;
+    }
+    insuranceModel.yanglaoFund = income  > maxInsurance ? maxInsurance * 0.08 : income * 0.08;
+    insuranceModel.yiliaoFund = income  > maxInsurance ? maxInsurance * 0.01: income * 0.01;
     insuranceModel.shengyuFund = income * 0 ;
-    insuranceModel.gongshangFund = income * 0.005;
-    insuranceModel.shiyeFund = income * 0.002;
-    insuranceModel.gongjijinFund = income * 0.05;
+    insuranceModel.gongshangFund = income * 0 ;
+    insuranceModel.shiyeFund = income  > maxInsurance ? maxInsurance * 0.005 : income * 0.005;
+    insuranceModel.gongjijinFund = income  > maxInsurance ? maxInsurance * 0.05: income * 0.05;
+
     NSLog(@"insurnace:yanglaoFund:%f,yiliaoFund:%f,shengyuFund:%f,gongshangFund:%f,shiyeFund:%f,gongjijinFund:%f",insuranceModel.yanglaoFund,insuranceModel.yiliaoFund,insuranceModel.shengyuFund,insuranceModel.gongshangFund,insuranceModel.shiyeFund,insuranceModel.gongjijinFund);
     return insuranceModel;
 }
 
 + (InsuranceFundModel  *)getCompanyInsuranceWithIncome:(CGFloat)income andCity:(NSString *)city {
+    CGFloat averageIncome =10000;
+    CGFloat maxInsurance =100000;
     InsuranceFundModel *insuranceModel = [[InsuranceFundModel alloc] init];
-    insuranceModel.yanglaoFund = income * 0.22;
-    insuranceModel.yiliaoFund = income * 0.1;
-    insuranceModel.shengyuFund = income * 0 ;
-    insuranceModel.gongshangFund = income * 0.005;
-    insuranceModel.shiyeFund = income * 0.002;
-    insuranceModel.gongjijinFund = income * 0.05;
+    if ([city isEqualToString:@"深圳"]) {
+        averageIncome = 8348;
+        maxInsurance = 8348 * 3;
+    }
+    insuranceModel.yanglaoFund = income  > maxInsurance ? maxInsurance* 0.22 : income * 0.22;
+    insuranceModel.yiliaoFund = income  > maxInsurance ? maxInsurance*0.062 : income * 0.062;
+    insuranceModel.shengyuFund = income  > maxInsurance ? maxInsurance*0.045 : income * 0.045 ;
+    insuranceModel.gongshangFund = income  > maxInsurance ? maxInsurance*0.005 : income * 0.005;
+    insuranceModel.shiyeFund = income  > maxInsurance ? maxInsurance*0.002 : income * 0.002;
+    insuranceModel.gongjijinFund = income  > maxInsurance ? maxInsurance*0.05 : income * 0.05;
 
     return insuranceModel;
 }

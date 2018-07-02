@@ -15,6 +15,7 @@
 #import "PdTaxTitleCell.h"
 #import "TaxFormView.h"
 #import "ProfitView.h"
+#define kSocialLowIncome 3500
 //#import "TaxtitleHeadie.xib"
 static NSString *const kTaxTitleItemCellId = @"kTaxTitleItemCellId";
 static NSString *const kTaxInsuranceItemCellId = @"kTaxInsuranceItemCellId";
@@ -31,7 +32,8 @@ UIScrollViewDelegate
 @property (nonatomic,strong)UITextField *incomeTextField;
 @property (nonatomic,strong)UIView      *cityView;
 @property (nonatomic,strong)UIView      *baseInsuranceView;
-
+@property (nonatomic,strong)UIButton    *yesButton;
+@property (nonatomic,strong)UIButton    *noButton ;
 @property (nonatomic,strong)UIView      *titleHeadView;
 @property (nonatomic,strong)TaxFormView *yanglaoView;
 @property (nonatomic,strong)TaxFormView *yiliaoView;
@@ -145,12 +147,61 @@ UIScrollViewDelegate
     }];
     
     UIView *baseInsuranceView = [[UIView alloc] initWithFrame:CGRectMake(0, self.cityView.bottom, Pd_Screen_width, 44)];
+//    baseInsuranceView.backgroundColor = [UIColor yellowColor];
     [self.view addSubview:baseInsuranceView];
     self.baseInsuranceView = baseInsuranceView;
     UILabel *baseLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 160, 44)];
     baseLabel.text = @"按基本工资缴纳社保";
     [baseInsuranceView addSubview:baseLabel];
     
+    UIButton *yesButton = [[UIButton alloc] init];
+    yesButton.backgroundColor = [UIColor lightGrayColor];
+    [baseInsuranceView addSubview:yesButton];
+    self.yesButton = yesButton;
+    [yesButton setImage:[UIImage imageNamed:@"check_off.png"]forState:UIControlStateNormal];
+    [yesButton setImage:[UIImage imageNamed:@"ico_Subscribe.png"]forState:UIControlStateSelected];
+    yesButton.selected =  YES;
+    yesButton.clipsToBounds = YES;
+    yesButton.layer.cornerRadius = 10;
+    [yesButton addTarget:self action:@selector(yesCheckBoxAction:) forControlEvents:UIControlEventTouchUpInside];
+    [yesButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(baseLabel.mas_right).offset(10);
+        make.centerY.equalTo(baseInsuranceView.mas_centerY);
+        make.width.and.height.equalTo(@20);
+    }];
+    
+    UILabel *yesLabel= [[UILabel alloc] init];
+    yesLabel.text = @"是";
+    [baseInsuranceView addSubview:yesLabel];
+    [yesLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(yesButton.mas_right).offset(10);
+        make.centerY.equalTo(baseInsuranceView.mas_centerY);
+        make.width.and.height.equalTo(@20);
+    }];
+    
+    UIButton *noButton = [[UIButton alloc] init];
+    noButton.backgroundColor = [UIColor lightGrayColor];
+    [baseInsuranceView addSubview:noButton];
+    self.noButton = noButton;
+    [noButton setImage:[UIImage imageNamed:@"check_off.png"]forState:UIControlStateNormal];
+    [noButton setImage:[UIImage imageNamed:@"ico_Subscribe.png"]forState:UIControlStateSelected];
+    noButton.clipsToBounds = YES;
+    noButton.layer.cornerRadius = 10;
+    [noButton addTarget:self action:@selector(noCheckBoxAction:) forControlEvents:UIControlEventTouchUpInside];
+    [noButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(yesLabel.mas_right).offset(10);
+        make.centerY.equalTo(baseInsuranceView.mas_centerY);
+        make.width.and.height.equalTo(@20);
+    }];
+    
+    UILabel *noLabel= [[UILabel alloc] init];
+    noLabel.text = @"否";
+    [baseInsuranceView addSubview:noLabel];
+    [noLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.equalTo(noButton.mas_right).offset(10);
+        make.centerY.equalTo(baseInsuranceView.mas_centerY);
+        make.width.and.height.equalTo(@20);
+    }];
 }
 
 
@@ -308,6 +359,29 @@ UIScrollViewDelegate
     [_profitView setupWithIncome:0];
 }
 
+#pragma mark -- UIButton action
+- (void)noCheckBoxAction:(UIButton *)button {
+    button.selected = !button.selected;
+    if (button.selected) {
+        self.yesButton.selected = NO;
+    }
+    else {
+        self.yesButton.selected = YES;
+    }
+    
+}
+
+- (void)yesCheckBoxAction:(UIButton *)button {
+    button.selected = !button.selected;
+    if (button.selected) {
+        self.noButton.selected = NO;
+    }
+    else {
+        self.noButton.selected = YES;
+    }
+    
+}
+
 #pragma mark -- UITextInputChange
 - (void)taxInputChange :(NSNotification *)noti {
 
@@ -340,8 +414,16 @@ UIScrollViewDelegate
     _shiyeView.companyFund =  [NSString stringWithFormat:@"%.0f",companyModel.shiyeFund];
     _gongjijinView.companyFund  = [NSString stringWithFormat:@"%.0f",companyModel.gongjijinFund];
     
-    CGFloat cutTax = income - insuranceModel.yanglaoFund -  insuranceModel.yiliaoFund - insuranceModel.gongjijinFund - insuranceModel.gongshangFund - insuranceModel.shengyuFund - insuranceModel.shengyuFund;
-    _cutTaxLabel.text = [NSString stringWithFormat:@"%.0f",cutTax];
+    CGFloat insuranceFund =  insuranceModel.yanglaoFund +  insuranceModel.yiliaoFund + insuranceModel.gongjijinFund + insuranceModel.gongshangFund + insuranceModel.shiyeFund + insuranceModel.shengyuFund;
+    CGFloat profit = [TaxUtility caculateProfitWithIncome:income andProfitModel:insuranceModel];
+    CGFloat taxForGovenment ;
+    if (profit > kSocialLowIncome) {
+        taxForGovenment =  income - profit - insuranceFund ;
+    }
+    else {
+        taxForGovenment = 0;
+    }
+    _cutTaxLabel.text = [NSString stringWithFormat:@"%.0f",taxForGovenment];
 }
 
 

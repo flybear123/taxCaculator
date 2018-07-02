@@ -53,7 +53,7 @@
 }
 
 -(void)setupWithIncome:(CGFloat)income {
-    _profitLabel.text = [NSString stringWithFormat:@"%0.1f元",income];
+    _profitLabel.text = [NSString stringWithFormat:@"%0.0f元",income];
     NSDictionary *textAtt = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:25.0f]};
     CGFloat contentW = ceil([_profitLabel.text boundingRectWithSize:CGSizeMake(Pd_Screen_width - 100, 50) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading  attributes:textAtt context:nil].size.width);
     [_profitLabel mas_updateConstraints:^(MASConstraintMaker *make) {
